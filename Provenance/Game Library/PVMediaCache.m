@@ -64,7 +64,7 @@ NSString * const PVMediaCacheWasEmptiedNotification = @"PVMediaCacheWasEmptiedNo
 														error:&error];
 		if (error)
 		{
-			DLog(@"Error creating cache directory at %@: %@", cachePath, [error localizedDescription]);
+			NSLog(@"Error creating cache directory at %@: %@", cachePath, [error localizedDescription]);
 		}
 	}
 	
@@ -165,7 +165,7 @@ NSString * const PVMediaCacheWasEmptiedNotification = @"PVMediaCacheWasEmptiedNo
     {
         if (![[NSFileManager defaultManager] removeItemAtPath:cachePath error:&error])
         {
-            DLog(@"Unable to delete cache item: %@ because: %@", cachePath, [error localizedDescription]);
+            NSLog(@"Unable to delete cache item: %@ because: %@", cachePath, [error localizedDescription]);
             return NO;
         }
     }
@@ -175,7 +175,7 @@ NSString * const PVMediaCacheWasEmptiedNotification = @"PVMediaCacheWasEmptiedNo
 
 + (void)emptyCache
 {
-	DLog(@"Emptying Cache");
+	NSLog(@"Emptying Cache");
 	NSString *cachePath = [self cachePath];
 	if ([[NSFileManager defaultManager] fileExistsAtPath:cachePath])
 	{

@@ -46,7 +46,7 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
 																			 error:&error];
 			if (!succeeded)
 			{
-				DLog(@"Unable to create directory at: %@, because: %@", self.path, [error localizedDescription]);
+				NSLog(@"Unable to create directory at: %@, because: %@", self.path, [error localizedDescription]);
 			}
 		}
         
@@ -71,7 +71,7 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
             }
             else
             {
-                DLog(@"Unable to get contents");
+                NSLog(@"Unable to get contents");
             }
         });
 	}
@@ -91,7 +91,7 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
 {
 	if (![self.path length])
 	{
-        DLog(@"Empty path");
+        NSLog(@"Empty path");
 		return;
 	}
 	
@@ -100,7 +100,7 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
 	int dirFileDescriptor = open([self.path fileSystemRepresentation], O_EVTONLY);
 	if (dirFileDescriptor < 0)
 	{
-        DLog(@"Unable open file system ref");
+        NSLog(@"Unable open file system ref");
 		return;
 	}
     
@@ -110,7 +110,7 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
                                                   self.serialQueue);
 	if (!self.dispatch_source)
 	{
-        DLog(@"Failed to cerate dispatch source");
+        NSLog(@"Failed to cerate dispatch source");
 		return;
 	}
     
@@ -159,12 +159,12 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
 {
 //    if ([[path pathExtension] isEqualToString:@"zip"])
 //    {
-        DLog(@"Start watching %@", [path lastPathComponent]);
+        NSLog(@"Start watching %@", [path lastPathComponent]);
         NSError *error = nil;
         NSDictionary *attributes = [[NSFileManager defaultManager] attributesOfItemAtPath:path error:&error];
         if (!attributes)
         {
-            DLog(@"Error getting file attributes for %@", path);
+            NSLog(@"Error getting file attributes for %@", path);
             return;
         }
         unsigned long long filesize = [attributes fileSize];
@@ -251,12 +251,12 @@ NSString *PVArchiveInflationFailedNotification = @"PVArchiveInflationFailedNotif
                         
                         if (!deleted)
                         {
-                            DLog(@"Unable to delete file at path %@, because %@", filePath, [error localizedDescription]);
+                            NSLog(@"Unable to delete file at path %@, because %@", filePath, [error localizedDescription]);
                         }
                     }
                     else
                     {
-                        DLog(@"Unable to unzip file: %@ because: %@", filePath, [error localizedDescription]);
+                        NSLog(@"Unable to unzip file: %@ because: %@", filePath, [error localizedDescription]);
                         dispatch_async(dispatch_get_main_queue(), ^{
                             [[NSNotificationCenter defaultCenter] postNotificationName:PVArchiveInflationFailedNotification
                                                                                 object:self];

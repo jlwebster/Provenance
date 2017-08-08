@@ -60,7 +60,7 @@ NSString * const OESQLiteErrorDomain = @"OESQLiteErrorDomain";
     int res = sqlite3_close(connection);
     if(res != SQLITE_OK)
     {
-        DLog(@"Could not close SQL Database correctly. (Error Code %d: %s)", res, sqlite3_errmsg(connection));
+        NSLog(@"Could not close SQL Database correctly. (Error Code %d: %s)", res, sqlite3_errmsg(connection));
     }
 }
 
@@ -134,12 +134,12 @@ NSString * const OESQLiteErrorDomain = @"OESQLiteErrorDomain";
         }
         case SQLITE_BLOB:
         {
-            DLog(@"SQLITE Type Blob not supported right now");
+            NSLog(@"SQLITE Type Blob not supported right now");
             value = nil;
             break;
         }
         default:
-            DLog(@"Unknown data type: %d", type);
+            NSLog(@"Unknown data type: %d", type);
             value = nil;
             break;
     }

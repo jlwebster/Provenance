@@ -240,7 +240,7 @@ void uncaughtExceptionHandler(NSException *exception)
     {
         __weak typeof(self) weakSelf = self;
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            DLog(@"Unable to load ROM at %@", [self.game romPath]);
+            NSLog(@"Unable to load ROM at %@", [self.game romPath]);
 #if !TARGET_OS_TV
             [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationFade];
 #endif

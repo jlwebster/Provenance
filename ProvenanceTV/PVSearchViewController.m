@@ -79,7 +79,7 @@
 													error:&error];
 	if (error)
 	{
-		DLog(@"Error creating save state directory: %@", [error localizedDescription]);
+		NSLog(@"Error creating save state directory: %@", [error localizedDescription]);
 	}
 
 	return batterySavesDirectory;
@@ -102,7 +102,7 @@
 													error:&error];
 	if (error)
 	{
-		DLog(@"Error creating save state directory: %@", [error localizedDescription]);
+		NSLog(@"Error creating save state directory: %@", [error localizedDescription]);
 	}
 
 	return saveStateDirectory;
@@ -151,7 +151,7 @@
 		NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:biosPath error:&error];
 		if (!contents)
 		{
-			DLog(@"Unable to get contents of %@ because %@", biosPath, [error localizedDescription]);
+			NSLog(@"Unable to get contents of %@ because %@", biosPath, [error localizedDescription]);
 			canLoad = NO;
 		}
 

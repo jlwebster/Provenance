@@ -129,13 +129,13 @@
                                                     attributes:nil
                                                          error:&error])
     {
-        DLog(@"Unable to create %@ - %@", subfolderPath, [error localizedDescription]);
+        NSLog(@"Unable to create %@ - %@", subfolderPath, [error localizedDescription]);
         return nil;
     }
     
     if (![[NSFileManager defaultManager] moveItemAtPath:[[self romsPath] stringByAppendingPathComponent:filePath] toPath:[subfolderPath stringByAppendingPathComponent:filePath] error:&error])
     {
-        DLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolderPath, [error localizedDescription]);
+        NSLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolderPath, [error localizedDescription]);
         return nil;
     }
     
@@ -152,7 +152,7 @@
     
     if (!contents)
     {
-        DLog(@"Error scanning %@, %@", [self romsPath], [error localizedDescription]);
+        NSLog(@"Error scanning %@, %@", [self romsPath], [error localizedDescription]);
         return [newPaths copy];
     }
     
@@ -173,19 +173,19 @@
                                   encoding:NSUTF8StringEncoding
                                      error:&error])
                 {
-                    DLog(@"Unable to rewrite cuesheet %@ because %@", cueSheetPath, [error localizedDescription]);
+                    NSLog(@"Unable to rewrite cuesheet %@ because %@", cueSheetPath, [error localizedDescription]);
                 }
             }
             else
             {
-                DLog(@"Unable to read cue sheet %@ because %@", cueSheetPath, [error localizedDescription]);
+                NSLog(@"Unable to read cue sheet %@ because %@", cueSheetPath, [error localizedDescription]);
             }
             
             
             
             if (![[NSFileManager defaultManager] moveItemAtPath:[[self romsPath] stringByAppendingPathComponent:file] toPath:[subfolderPath stringByAppendingPathComponent:file] error:&error])
             {
-                DLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolderPath, [error localizedDescription]);
+                NSLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolderPath, [error localizedDescription]);
             }
         }
     }
@@ -224,7 +224,7 @@
                                                     attributes:nil
                                                          error:&error])
     {
-        DLog(@"Unable to create %@ - %@", subfolderPath, [error localizedDescription]);
+        NSLog(@"Unable to create %@ - %@", subfolderPath, [error localizedDescription]);
         return nil;
     }
     
@@ -235,11 +235,11 @@
         {
             if (![[NSFileManager defaultManager] removeItemAtPath:[[self romsPath] stringByAppendingPathComponent:filePath] error:&error])
             {
-                DLog(@"Unable to delete %@ (after trying to move and getting 'file exists error', because %@", filePath, [error localizedDescription]);
+                NSLog(@"Unable to delete %@ (after trying to move and getting 'file exists error', because %@", filePath, [error localizedDescription]);
             }
         }
         
-        DLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolderPath, [error localizedDescription]);
+        NSLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolderPath, [error localizedDescription]);
         return nil;
     }
     
@@ -257,7 +257,7 @@
     NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self conflictPath] error:&error];
     if (!contents)
     {
-        DLog(@"Unable to get contents of %@ because %@", [self conflictPath], [error localizedDescription]);
+        NSLog(@"Unable to get contents of %@ because %@", [self conflictPath], [error localizedDescription]);
     }
     
     return contents;
@@ -277,7 +277,7 @@
         NSError *error = nil;
         if (![[NSFileManager defaultManager] moveItemAtPath:[[self conflictPath] stringByAppendingPathComponent:filePath] toPath:[subfolder stringByAppendingPathComponent:filePath] error:&error])
         {
-            DLog(@"Unable to move %@ to %@ because %@", filePath, subfolder, [error localizedDescription]);
+            NSLog(@"Unable to move %@ to %@ because %@", filePath, subfolder, [error localizedDescription]);
         }
         
         // moved the .cue, now move .bins .imgs etc
@@ -302,17 +302,17 @@
                                       encoding:NSUTF8StringEncoding
                                          error:&error])
                     {
-                        DLog(@"Unable to rewrite cuesheet %@ because %@", cueSheetPath, [error localizedDescription]);
+                        NSLog(@"Unable to rewrite cuesheet %@ because %@", cueSheetPath, [error localizedDescription]);
                     }
                 }
                 else
                 {
-                    DLog(@"Unable to read cue sheet %@ because %@", cueSheetPath, [error localizedDescription]);
+                    NSLog(@"Unable to read cue sheet %@ because %@", cueSheetPath, [error localizedDescription]);
                 }
                 
                 if (![[NSFileManager defaultManager] moveItemAtPath:[[self conflictPath] stringByAppendingPathComponent:file] toPath:[subfolder stringByAppendingPathComponent:file] error:&error])
                 {
-                    DLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolder, [error localizedDescription]);
+                    NSLog(@"Unable to move file from %@ to %@ - %@", filePath, subfolder, [error localizedDescription]);
                 }
             }
         }
@@ -473,7 +473,7 @@
     
     if (![results count])
     {
-        DLog(@"Unable to find ROM (%@) in DB", [game romPath]);
+        NSLog(@"Unable to find ROM (%@) in DB", [game romPath]);
         [realm beginWriteTransaction];
         [game setRequiresSync:NO];
         [realm commitWriteTransaction];
@@ -516,7 +516,7 @@
         return;
     }
     
-    DLog(@"Starting Artwork download for %@", url);
+    NSLog(@"Starting Artwork download for %@", url);
     NSURL *artworkURL = [NSURL URLWithString:url];
     if (!artworkURL)
     {
@@ -530,14 +530,14 @@
                                                              error:&error];
     if (error)
     {
-        DLog(@"error downloading artwork from: %@ -- %@", url, [error localizedDescription]);
+        NSLog(@"error downloading artwork from: %@ -- %@", url, [error localizedDescription]);
         return;
     }
     
     if ([urlResponse statusCode] != 200)
     {
-        DLog(@"HTTP Error: %zd", [urlResponse statusCode]);
-        DLog(@"Response: %@", urlResponse);
+        NSLog(@"HTTP Error: %zd", [urlResponse statusCode]);
+        NSLog(@"Response: %@", urlResponse);
     }
     
     UIImage *artwork = [[UIImage alloc] initWithData:data];
@@ -563,7 +563,7 @@
     }
     if (!self.openVGDB)
     {
-        DLog(@"Unable to open game database: %@", [*error localizedDescription]);
+        NSLog(@"Unable to open game database: %@", [*error localizedDescription]);
         return nil;
     }
     

@@ -315,7 +315,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
 													error:&error];
 	if (error)
 	{
-		DLog(@"Error creating save state directory: %@", [error localizedDescription]);
+		NSLog(@"Error creating save state directory: %@", [error localizedDescription]);
 	}
 	
 	return batterySavesDirectory;
@@ -346,7 +346,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
 													error:&error];
 	if (error)
 	{
-		DLog(@"Error creating save state directory: %@", [error localizedDescription]);
+		NSLog(@"Error creating save state directory: %@", [error localizedDescription]);
 	}
 	
 	return saveStateDirectory;
@@ -410,15 +410,15 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
     NSError *error = nil;
     if (![[NSFileManager defaultManager] removeItemAtPath:[libraryPath stringByAppendingPathComponent:@"PVGame.sqlite"] error:&error])
     {
-        DLog(@"Unable to delete PVGame.sqlite because %@", [error localizedDescription]);
+        NSLog(@"Unable to delete PVGame.sqlite because %@", [error localizedDescription]);
     }
     if (![[NSFileManager defaultManager] removeItemAtPath:[libraryPath stringByAppendingPathComponent:@"PVGame.sqlite-shm"] error:&error])
     {
-        DLog(@"Unable to delete PVGame.sqlite-shm because %@", [error localizedDescription]);
+        NSLog(@"Unable to delete PVGame.sqlite-shm because %@", [error localizedDescription]);
     }
     if (![[NSFileManager defaultManager] removeItemAtPath:[libraryPath stringByAppendingPathComponent:@"PVGame.sqlite-wal"] error:&error])
     {
-        DLog(@"Unable to delete PVGame.sqlite-wal because %@", [error localizedDescription]);
+        NSLog(@"Unable to delete PVGame.sqlite-wal because %@", [error localizedDescription]);
     }
     
     if (![[NSFileManager defaultManager] createDirectoryAtPath:[self romsPath]
@@ -426,14 +426,14 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
                                                attributes:nil
                                                     error:&error])
     {
-        DLog(@"Unable to create roms directory because %@", [error localizedDescription]);
+        NSLog(@"Unable to create roms directory because %@", [error localizedDescription]);
         return; // dunno what else can be done if this fails
     }
     
     NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[self documentsPath] error:&error];
     if (!contents)
     {
-        DLog(@"Unable to get contents of documents because %@", [error localizedDescription]);
+        NSLog(@"Unable to get contents of documents because %@", [error localizedDescription]);
     }
     
     for (NSString *path in contents)
@@ -447,7 +447,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
                                                          toPath:[[self romsPath] stringByAppendingPathComponent:path]
                                                           error:&error])
             {
-                DLog(@"Unable to move %@ to %@ because %@", fullPath, [[self romsPath] stringByAppendingPathComponent:path], [error localizedDescription]);
+                NSLog(@"Unable to move %@ to %@ because %@", fullPath, [[self romsPath] stringByAppendingPathComponent:path], [error localizedDescription]);
             }
         }
     }
@@ -826,7 +826,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
         NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:biosPath error:&error];
         if (!contents)
         {
-            DLog(@"Unable to get contents of %@ because %@", biosPath, [error localizedDescription]);
+            NSLog(@"Unable to get contents of %@ because %@", biosPath, [error localizedDescription]);
             canLoad = NO;
         }
         
@@ -1206,19 +1206,19 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
     BOOL success = [[NSFileManager defaultManager] removeItemAtPath:[self saveStatePathForROM:romPath] error:&error];
     if (!success)
     {
-        DLog(@"Unable to delete save states at path: %@ because: %@", [self saveStatePathForROM:romPath], [error localizedDescription]);
+        NSLog(@"Unable to delete save states at path: %@ because: %@", [self saveStatePathForROM:romPath], [error localizedDescription]);
     }
     
     success = [[NSFileManager defaultManager] removeItemAtPath:[self batterySavesPathForROM:romPath] error:&error];
     if (!success)
     {
-        DLog(@"Unable to delete battery saves at path: %@ because: %@", [self batterySavesPathForROM:romPath], [error localizedDescription]);
+        NSLog(@"Unable to delete battery saves at path: %@ because: %@", [self batterySavesPathForROM:romPath], [error localizedDescription]);
     }
     
     success = [[NSFileManager defaultManager] removeItemAtPath:romPath error:&error];
     if (!success)
     {
-        DLog(@"Unable to delete rom at path: %@ because: %@", romPath, [error localizedDescription]);
+        NSLog(@"Unable to delete rom at path: %@ because: %@", romPath, [error localizedDescription]);
     }
     
     [self deleteRelatedFilesGame:game];
@@ -1257,7 +1257,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
     
     if (!contents)
     {
-        DLog(@"Error scanning %@, %@", romDirectory, [error localizedDescription]);
+        NSLog(@"Error scanning %@, %@", romDirectory, [error localizedDescription]);
         return;
     }
     
@@ -1270,7 +1270,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
             if (![[NSFileManager defaultManager] removeItemAtPath:[romDirectory stringByAppendingPathComponent:file]
                                                             error:&error])
             {
-                DLog(@"Unable to delete file at %@ because %@", file, [error localizedDescription]);
+                NSLog(@"Unable to delete file at %@ because %@", file, [error localizedDescription]);
             }
         }
     }
@@ -1313,7 +1313,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
                                           }
                                           [group setAssetsFilter:[ALAssetsFilter allPhotos]];
                                           NSInteger index = [group numberOfAssets] - 1;
-                                          DLog(@"Group: %@", group);
+                                          NSLog(@"Group: %@", group);
                                           if (index >= 0)
                                           {
                                               [group enumerateAssetsAtIndexes:[NSIndexSet indexSetWithIndex:index]

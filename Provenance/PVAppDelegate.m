@@ -84,7 +84,7 @@
         BOOL success = [fileManager moveItemAtPath:sourcePath toPath:destinationPath error:&error];
         if (!success || error)
         {
-            DLog(@"Unable to move file from %@ to %@ because %@", sourcePath, destinationPath, [error localizedDescription]);
+            NSLog(@"Unable to move file from %@ to %@ because %@", sourcePath, destinationPath, [error localizedDescription]);
         }
     }
 #if TARGET_OS_TV
