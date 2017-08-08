@@ -25,18 +25,24 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
+#if TARGET_OS_TV
+#else
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
-    
-    if (![fileManager fileExistsAtPath:iCloudDocumentsURL.path isDirectory:nil]) {
-        NSError *error;
-        [fileManager createDirectoryAtURL:iCloudDocumentsURL withIntermediateDirectories:YES attributes:nil error:&error];
-        if (error != nil) {
-            NSLog(@"Error creating iCloud Documents folder: %@", error);
+
+    if (iCloudDocumentsURL != nil) {
+        if (![fileManager fileExistsAtPath:iCloudDocumentsURL.path isDirectory:nil]) {
+            NSError *error;
+            [fileManager createDirectoryAtURL:iCloudDocumentsURL withIntermediateDirectories:YES attributes:nil error:&error];
+            if (error != nil) {
+                NSLog(@"Error creating iCloud Documents folder: %@", error);
+            }
         }
     }
 
     [self syncICloudDocuments];
+#endif
 
     [[UIApplication sharedApplication] setIdleTimerDisabled:[[PVSettingsModel sharedInstance] disableAutoLock]];
 #if !TARGET_OS_TV
@@ -119,8 +125,16 @@
     if (url && [url isFileURL])
     {
         NSFileManager *fileManager = [NSFileManager defaultManager];
+
+        NSString *documentsDirectory;
+#if TARGET_OS_TV
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        documentsDirectory = [paths objectAtIndex:0];
+#else
         NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
-        NSString *documentsDirectory = iCloudDocumentsURL.path;
+
+        documentsDirectory = iCloudDocumentsURL.path;
+#endif
         
         NSString *sourcePath = [url path];
         NSString *filename = [sourcePath lastPathComponent];

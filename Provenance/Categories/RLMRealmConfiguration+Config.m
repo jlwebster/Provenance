@@ -15,6 +15,18 @@
 {
     RLMRealmConfiguration *config = [[RLMRealmConfiguration alloc] init];
 
+#if TARGET_OS_TV
+    NSString *path = nil;
+    if ([RLMRealmConfiguration supportsAppGroups]) {
+        path = [RLMRealmConfiguration appGroupPath];
+    }
+    else {
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+        path = paths.firstObject;
+    }
+
+    [config setPath:[path stringByAppendingPathComponent:@"default.realm"]];
+#else
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
 
@@ -29,7 +41,7 @@
     NSURL *realmPath = [iCloudDocumentsURL URLByAppendingPathComponent:@"default.realm"];
 
     [config setPath:realmPath.path];
-    
+#endif
     // Bump schema version to migrate new PVGame property, isFavorite
     config.schemaVersion = 1;
     config.migrationBlock = ^(RLMMigration *migration, uint64_t oldSchemaVersion) {

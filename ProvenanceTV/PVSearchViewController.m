@@ -45,9 +45,8 @@
 
 - (NSString *)documentsPath
 {
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
-    return iCloudDocumentsURL.path;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [paths firstObject];
 }
 
 - (NSString *)BIOSPathForSystemID:(NSString *)systemID

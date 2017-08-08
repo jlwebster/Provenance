@@ -47,9 +47,15 @@ NSString * const PVMediaCacheWasEmptiedNotification = @"PVMediaCacheWasEmptiedNo
 {
 	NSString *cachePath = nil;
 
+#if TARGET_OS_TV
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    cachePath = [paths objectAtIndex:0];
+#else
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
+
     cachePath = iCloudDocumentsURL.path;
+#endif
 	
 	cachePath = [cachePath stringByAppendingPathComponent:kPVCachePath];
 	

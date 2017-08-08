@@ -32,7 +32,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>684</string>
+	<string>685</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
@@ -55,7 +55,7 @@
 		</dict>
 	</dict>
 	<key>Revision</key>
-	<string>578626a</string>
+	<string>2b1cb8d</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>

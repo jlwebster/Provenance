@@ -261,10 +261,15 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
 
 - (NSString *)documentsPath
 {
+#if TARGET_OS_TV
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
+    return [paths objectAtIndex:0];
+#else
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
-    
+
     return iCloudDocumentsURL.path;
+#endif
 }
 
 - (NSString *)romsPath
