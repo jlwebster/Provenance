@@ -17,12 +17,27 @@
 
 @interface PVAppDelegate ()
 
+@property (nonatomic, strong) NSMetadataQuery *query;
+
 @end
 
 @implementation PVAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
+    
+    if (![fileManager fileExistsAtPath:iCloudDocumentsURL.path isDirectory:nil]) {
+        NSError *error;
+        [fileManager createDirectoryAtURL:iCloudDocumentsURL withIntermediateDirectories:YES attributes:nil error:&error];
+        if (error != nil) {
+            NSLog(@"Error creating iCloud Documents folder: %@", error);
+        }
+    }
+
+    [self syncICloudDocuments];
+
     [[UIApplication sharedApplication] setIdleTimerDisabled:[[PVSettingsModel sharedInstance] disableAutoLock]];
 #if !TARGET_OS_TV
     if (NSClassFromString(@"UIApplicationShortcutItem")) {
@@ -59,6 +74,41 @@
 	return YES;
 }
 
+- (void)syncICloudDocuments {
+    self.query = [NSMetadataQuery new];
+    [self.query setSearchScopes:[NSArray arrayWithObjects:NSMetadataQueryUbiquitousDocumentsScope, nil]];
+    [self.query setPredicate:[NSPredicate predicateWithFormat:@"%K LIKE '*'", NSMetadataItemFSNameKey]];
+    NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+    [notificationCenter addObserver:self selector:@selector(fileListReceived) name:NSMetadataQueryDidFinishGatheringNotification object:nil];
+    [notificationCenter addObserver:self selector:@selector(fileListReceived) name:NSMetadataQueryDidUpdateNotification object:nil];
+    [self.query startQuery];
+}
+
+- (void)fileListReceived {
+    NSLog(@"Starting to download iCloud Drive files");
+
+    NSArray *queryResults = self.query.results;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    for (NSMetadataItem *item in queryResults) {
+        NSURL *url = [item valueForAttribute:NSMetadataItemURLKey];
+        NSNumber *isDownloaded = nil;
+        [url getResourceValue:&isDownloaded forKey:NSURLUbiquitousItemIsDownloadedKey error:&error];
+        if (error != nil) {
+            NSLog(@"Error getting resource value %@", error);
+            error = nil;
+        }
+        if (![isDownloaded boolValue]) {
+            [fileManager startDownloadingUbiquitousItemAtURL:url error:&error];
+            if (error != nil) {
+                NSLog(@"Error starting to download %@", error);
+                error = nil;
+            }
+        }
+    }
+    NSLog(@"Finished downloading iCloud Drive files");
+}
+
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString *,id> *)options
 {
 #pragma clang diagnostic push
@@ -68,18 +118,14 @@
 
     if (url && [url isFileURL])
     {
-#if TARGET_OS_TV
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-        NSString *documentsDirectory = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
+        NSString *documentsDirectory = iCloudDocumentsURL.path;
         
         NSString *sourcePath = [url path];
         NSString *filename = [sourcePath lastPathComponent];
         NSString *destinationPath = [[documentsDirectory stringByAppendingPathComponent:@"roms"] stringByAppendingPathComponent:filename];
-        
-        NSFileManager *fileManager = [NSFileManager defaultManager];
+
         NSError *error = nil;
         BOOL success = [fileManager moveItemAtPath:sourcePath toPath:destinationPath error:&error];
         if (!success || error)

@@ -592,13 +592,9 @@
 
 - (NSString *)documentsPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    
-    return [paths firstObject];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
+    return iCloudDocumentsURL.path;
 }
 
 - (NSString *)romsPath

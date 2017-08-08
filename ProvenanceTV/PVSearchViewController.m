@@ -45,8 +45,9 @@
 
 - (NSString *)documentsPath
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	return [paths firstObject];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
+    return iCloudDocumentsURL.path;
 }
 
 - (NSString *)BIOSPathForSystemID:(NSString *)systemID
@@ -56,17 +57,12 @@
 
 - (NSString *)romsPath
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-
-	return [documentsDirectoryPath stringByAppendingPathComponent:@"roms"];
+	return [[self documentsPath] stringByAppendingPathComponent:@"roms"];
 }
 
 - (NSString *)batterySavesPathForROM:(NSString *)romPath
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-	NSString *batterySavesDirectory = [documentsDirectoryPath stringByAppendingPathComponent:@"Battery States"];
+	NSString *batterySavesDirectory = [[self documentsPath] stringByAppendingPathComponent:@"Battery States"];
 
 	NSString *romName = [[[romPath lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
 	batterySavesDirectory = [batterySavesDirectory stringByAppendingPathComponent:romName];
@@ -87,9 +83,7 @@
 
 - (NSString *)saveStatePathForROM:(NSString *)romPath
 {
-	NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-	NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-	NSString *saveStateDirectory = [documentsDirectoryPath stringByAppendingPathComponent:@"Save States"];
+	NSString *saveStateDirectory = [[self documentsPath] stringByAppendingPathComponent:@"Save States"];
 
 	NSString *romName = [[[romPath lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
 	saveStateDirectory = [saveStateDirectory stringByAppendingPathComponent:romName];

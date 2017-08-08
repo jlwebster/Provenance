@@ -46,14 +46,9 @@
 
 - (NSString*)getDocumentDirectory
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    NSString *documentPath = [paths objectAtIndex: 0];
-    
-    return documentPath;
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
+    return iCloudDocumentsURL.path;
 }
 
 - (NSUserActivity *)handoffActivity

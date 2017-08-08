@@ -89,10 +89,6 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
     if ((self = [super initWithCoder:aDecoder]))
     {
         [[NSUserDefaults standardUserDefaults] registerDefaults:@{PVRequiresMigrationKey : @(YES)}];
-
-        [RLMRealmConfiguration setRealmConfig];
-
-        self.realm = [RLMRealm defaultRealm];
     }
     
     return self;
@@ -124,6 +120,10 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
 - (void)viewDidLoad
 {
 	[super viewDidLoad];
+
+    [RLMRealmConfiguration setRealmConfig];
+
+    self.realm = [RLMRealm defaultRealm];
 
     self.initialAppearance = YES;
 
@@ -261,48 +261,25 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
 
 - (NSString *)documentsPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
     
-    return documentsDirectoryPath;
+    return iCloudDocumentsURL.path;
 }
 
 - (NSString *)romsPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-	
-	return [documentsDirectoryPath stringByAppendingPathComponent:@"roms"];
+	return [[self documentsPath] stringByAppendingPathComponent:@"roms"];
 }
 
 - (NSString *)coverArtPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-
-    return [paths.firstObject stringByAppendingPathComponent:@"Cover Art"];
+    return [[self documentsPath] stringByAppendingPathComponent:@"Cover Art"];
 }
 
 - (NSString *)batterySavesPathForROM:(NSString *)romPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-	NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-	NSString *batterySavesDirectory = [documentsDirectoryPath stringByAppendingPathComponent:@"Battery States"];
+	NSString *batterySavesDirectory = [[self documentsPath] stringByAppendingPathComponent:@"Battery States"];
 	
 	NSString *romName = [[[romPath lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
 	batterySavesDirectory = [batterySavesDirectory stringByAppendingPathComponent:romName];
@@ -323,13 +300,7 @@ static NSString *_reuseIdentifier = @"PVGameLibraryCollectionViewCell";
 
 - (NSString *)saveStatePathForROM:(NSString *)romPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-	NSString *saveStateDirectory = [documentsDirectoryPath stringByAppendingPathComponent:@"Save States"];
+	NSString *saveStateDirectory = [[self documentsPath] stringByAppendingPathComponent:@"Save States"];
 	
     NSMutableArray *filenameComponents = [[[romPath lastPathComponent] componentsSeparatedByString:@"."] mutableCopy];
     // remove extension

@@ -62,26 +62,15 @@
 
 - (NSString *)documentsPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSURL *iCloudDocumentsURL = [[fileManager URLForUbiquityContainerIdentifier:nil] URLByAppendingPathComponent:@"Documents"];
     
-    return documentsDirectoryPath;
+    return iCloudDocumentsURL.path;
 }
 
 - (NSString *)conflictsPath
 {
-#if TARGET_OS_TV
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
-#else
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-#endif
-    NSString *documentsDirectoryPath = [paths objectAtIndex:0];
-    
-    return [documentsDirectoryPath stringByAppendingPathComponent:@"conflicts"];
+    return [[self documentsPath] stringByAppendingPathComponent:@"conflicts"];
 }
 
 #if TARGET_OS_TV
